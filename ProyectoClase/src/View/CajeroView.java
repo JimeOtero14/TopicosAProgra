@@ -28,6 +28,8 @@ public class CajeroView {
         System.out.println("1.- Consultar Saldo");
         System.out.println("2.- Retirar");
         System.out.println("3.- Depositar");
+        System.out.println("4.- Transferir");
+        System.out.println("5.- Cambiar PIN");
         //definir las opciones faltantes
         System.out.println("9.- Salir");
     }
@@ -56,4 +58,26 @@ public class CajeroView {
     }
     //Personalizar mensajes de error y de exito
     //metodo para salir cerrar el scanner
+
+    public String solicitarCuentaDestino(){
+        System.out.print("Cuenta destino: ");
+        return scanner.nextLine();
+    }
+
+    public String solicitarPinActual(){
+        System.out.print("PIN actual: ");
+        return scanner.nextLine();
+    }
+
+    public String solicitarNuevoPin(){
+        System.out.print("Nuevo PIN: ");
+        return scanner.nextLine();
+    }
+    public void mostrarError(String error){
+        System.out.println("Error: " + error);
+    }
+
+    public void cerrarScanner(){
+        scanner.close();
+    }
 }

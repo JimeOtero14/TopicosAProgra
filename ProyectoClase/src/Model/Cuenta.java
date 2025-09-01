@@ -40,11 +40,48 @@ public class Cuenta {
         }
         return false;
     }
-    public void dpositar(double cantidad){
+    public void depositar(double cantidad){
         if (cantidad > 0){
             saldo += cantidad;
         }
     }
 
     //De tarea diseñar los comportamientos restantes transferir, cambiar nip
+
+    public boolean transferir(Cuenta cuentaDestino, double cantidad) {
+        if (cantidad <= 0) {
+            return false;
+        }
+
+        if (this.saldo < cantidad) {
+            return false;
+        }
+
+        if (cuentaDestino == null) {
+            return false;
+        }
+
+        if (this.retirar(cantidad)) {
+            cuentaDestino.depositar(cantidad);
+            return true;
+        }
+
+        return false;
+    }
+    public boolean cambiarNip(String pinActual, String nuevoPin) {
+        if (!validarPin(pinActual)) {
+            return false;
+        }
+
+        if (nuevoPin == null || nuevoPin.trim().isEmpty()) {
+            return false;
+        }
+
+        if (!nuevoPin.matches("\\d{4}")) {
+            return false;
+        }
+
+        this.pin = nuevoPin;
+        return true;
+    }
 }
