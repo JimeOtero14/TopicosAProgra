@@ -8,7 +8,7 @@ public class CajeroController {
     private CajeroView view;
     private boolean sistemaActivo;
 
-    public CajeroController(){
+    public CajeroController(CajeroModel model, CajeroView view){
         this.model = model;
         this.view = view;
         this.sistemaActivo = true;
@@ -30,6 +30,46 @@ public class CajeroController {
         return model.autenticacion(numeroCuenta, pin);
     }
     private void ejecutarMenuPrincipal(){
-
+        boolean sessionActive = true;
+        while(sessionActive){
+            view.mostrarMenuPrincipal(model.getCuentaActual().getTitular());
+            int opcion = view.leerOpcion();
+            switch (opcion){
+                case 1:
+                    consultarSaldo();
+                break;
+                case 2:
+                    realizarRetiro();
+                break;
+            }
+        }
+    }
+    public void consultarSaldo(){
+        double saldo = model.consultarSaldo();
+        view.mostrarSaldo(saldo);
+    }
+    private void realizarRetiro(){
+        double cantidad = view.solicitarCantidad("Retirar");
+        if (cantidad <= 0) {
+            view.mostrarMensaje("Cantidad inválida");
+            return;
+        }
+        if (model.realizarRetiro(cantidad)) {
+            view.mostrarMensaje("Retiro exitoso de "+cantidad);
+        }else{
+            view.mostrarMensaje("Fondos insuficientes");
+        }
+    }
+    public void realizarDeposito(){
+        double cantidad = view.solicitarCantidad("Depositar");
+        if (cantidad <= 0) {
+            view.mostrarMensaje("Error en la cantidad");
+            return;
+        }
+        if (model.realizarDeposito(cantidad)) {
+            view.mostrarMensaje("Depósito exitoso de "+cantidad);
+        }else{
+            view.mostrarMensaje("Error al procesar el deposito");
+        }
     }
 }
