@@ -13,16 +13,12 @@ import Model.CajeroModel;
 
 public class CajeroAutomatico {
 
-        /**
+    /**
      * Metodo principal que inicia la aplicación del cajero automático.
-     * Crea las instancias del modelo, vista y controlador, y pone en
-     * marcha el sistema.
-     *
-     * @param args Argumentos de línea de comandos (no utilizados en esta aplicación)
+     * Este metodo es ahora genérico para soportar cualquier tipo de Cuenta (T extends Cuenta).
+     * Para usos típicos, se usa Cuenta por defecto.
      */
-
-    public static void main(String[] args) {
-
+    public static <T extends Model.Cuenta> void main(String[] args) {
         CajeroModel model = new CajeroModel();
         CajeroView view = new CajeroView();
         CajeroController controller = new CajeroController(model, view);
