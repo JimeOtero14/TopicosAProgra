@@ -9,11 +9,12 @@ public class Tupla<T, U, V> {
         this.tercero = tercero;
     }
 
-    // Getters y Setters
+    //Getters
     public T getPrimer() { return primer; }
     public U getSegundo() { return segundo; }
     public V getTercero() { return tercero; }
 
+    //Setters
     public void setPrimer(T primer) { this.primer = primer; }
     public void setSegundo(U segundo) { this.segundo = segundo; }
     public void setTercero(V tercero) { this.tercero = tercero; }
