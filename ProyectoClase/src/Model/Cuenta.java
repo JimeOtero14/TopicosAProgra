@@ -4,6 +4,9 @@ package Model;
  * Clase que representa una cuenta bancaria con sus operaciones básicas.
  * Permite realizar operaciones como retiros, depósitos, transferencias y cambio de NIP.
  *
+ * Se implementa el patrón de diseño Builder para la creación flexible y segura
+ * de instancias de Cuenta, evitando constructores con muchos parámetros.
+ *
  * @author Jimena Otero
  */
 
@@ -16,17 +19,29 @@ public class Cuenta {
     /**
      * Constructor para crear una nueva cuenta bancaria.
      *
+     * Queda disponible por compatibilidad, pero se recomienda usar el Builder.
+     *
      * @param numeroCuenta El número único que identifica la cuenta
      * @param pin El PIN de seguridad de la cuenta (4 dígitos)
      * @param saldoInicial El saldo inicial con el que se crea la cuenta
      * @param titular El nombre del titular de la cuenta
      */
-
+    @Deprecated
     public Cuenta(String numeroCuenta, String pin, double saldoInicial, String titular) {
         this.numeroCuenta = numeroCuenta;
         this.pin = pin;
         this.saldo = saldoInicial;
         this.titular = titular;
+    }
+
+    /**
+     * Constructor privado utilizado por el Builder.
+     */
+    private Cuenta(Builder builder) {
+        this.numeroCuenta = builder.numeroCuenta;
+        this.pin = builder.pin;
+        this.saldo = builder.saldoInicial;
+        this.titular = builder.titular;
     }
 
     /**
@@ -69,7 +84,7 @@ public class Cuenta {
         return titular;
     }
 
-    //Reglas de negocio
+    // Reglas de negocio
 
     /**
      * Valida si el PIN ingresado coincide con el PIN de la cuenta.
@@ -109,7 +124,7 @@ public class Cuenta {
         }
     }
 
-    //De tarea diseñar los comportamientos restantes transferir, cambiar nip
+    // De tarea diseñar los comportamientos restantes transferir, cambiar nip
 
     /**
      * Transfiere fondos desde esta cuenta a otra cuenta destino.
@@ -163,5 +178,52 @@ public class Cuenta {
 
         this.pin = nuevoPin;
         return true;
+    }
+
+    /**
+     * Builder para crear instancias de Cuenta de manera controlada.
+     * Permite validaciones y un estilo fluido en la construcción del objeto.
+     */
+    public static class Builder {
+        private String numeroCuenta;
+        private String pin;
+        private double saldoInicial;
+        private String titular;
+
+        public Builder conNumeroCuenta(String numeroCuenta) {
+            this.numeroCuenta = numeroCuenta;
+            return this;
+        }
+
+        public Builder conPin(String pin) {
+            this.pin = pin;
+            return this;
+        }
+
+        public Builder conSaldoInicial(double saldoInicial) {
+            this.saldoInicial = saldoInicial;
+            return this;
+        }
+
+        public Builder conTitular(String titular) {
+            this.titular = titular;
+            return this;
+        }
+
+        public Cuenta build() {
+            if (numeroCuenta == null || numeroCuenta.trim().isEmpty()) {
+                throw new IllegalArgumentException("El número de cuenta es requerido");
+            }
+            if (titular == null || titular.trim().isEmpty()) {
+                throw new IllegalArgumentException("El titular es requerido");
+            }
+            if (pin == null || !pin.matches("\\d{4}")) {
+                throw new IllegalArgumentException("El PIN debe contener exactamente 4 dígitos");
+            }
+            if (saldoInicial < 0) {
+                throw new IllegalArgumentException("El saldo inicial no puede ser negativo");
+            }
+            return new Cuenta(this);
+        }
     }
 }
