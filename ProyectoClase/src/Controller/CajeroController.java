@@ -2,6 +2,8 @@ package Controller;
 
 import Model.CajeroModel;
 import View.CajeroView;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Controlador principal que coordina las operaciones entre el modelo y la vista.
@@ -14,6 +16,11 @@ public class CajeroController {
     private CajeroModel model;
     private CajeroView view;
     private boolean sistemaActivo;
+    private Map<Integer, OperacionStrategy> estrategias;
+
+    private interface OperacionStrategy {
+        void ejecutar();
+    }
 
     /**
      * Constructor que inicializa el controlador con el modelo y la vista.
@@ -26,6 +33,61 @@ public class CajeroController {
         this.model = model;
         this.view = view;
         this.sistemaActivo = true;
+        inicializarEstrategias();
+    }
+
+    private void inicializarEstrategias() {
+        estrategias = new HashMap<>();
+        estrategias.put(1, () -> {
+            double saldo = model.consultarSaldo();
+            view.mostrarSaldo(saldo);
+        });
+        estrategias.put(2, () -> {
+            double cantidad = view.solicitarCantidad("Retirar");
+            if (cantidad <= 0) {
+                view.mostrarMensaje("Cantidad inválida");
+                return;
+            }
+            if (model.realizarRetiro(cantidad)) {
+                view.mostrarMensaje("Retiro exitoso de "+cantidad);
+            } else {
+                view.mostrarMensaje("Fondos insuficientes");
+            }
+        });
+        estrategias.put(3, () -> {
+            double cantidad = view.solicitarCantidad("Depositar");
+            if (cantidad <= 0) {
+                view.mostrarMensaje("Error en la cantidad");
+                return;
+            }
+            if (model.realizarDeposito(cantidad)) {
+                view.mostrarMensaje("Depósito exitoso de "+cantidad);
+            } else {
+                view.mostrarMensaje("Error al procesar el deposito");
+            }
+        });
+        estrategias.put(4, () -> {
+            String destino = view.solicitarCuentaDestino();
+            double cantidad = view.solicitarCantidad("Transferir");
+            if (cantidad <= 0) {
+                view.mostrarMensaje("Cantidad inválida");
+                return;
+            }
+            if (model.realizarTransferencia(destino, cantidad)) {
+                view.mostrarMensaje("Transferencia exitosa de "+cantidad+" a "+destino);
+            } else {
+                view.mostrarMensaje("No se pudo completar la transferencia");
+            }
+        });
+        estrategias.put(5, () -> {
+            String pinActual = view.solicitarPinActual();
+            String nuevoPin = view.solicitarNuevoPin();
+            if (model.cambiarNip(pinActual, nuevoPin)) {
+                view.mostrarMensaje("PIN cambiado correctamente");
+            } else {
+                view.mostrarMensaje("No se pudo cambiar el PIN");
+            }
+        });
     }
 
     /**
@@ -67,13 +129,15 @@ public class CajeroController {
         while(sessionActive){
             view.mostrarMenuPrincipal(model.getCuentaActual().getTitular());
             int opcion = view.leerOpcion();
-            switch (opcion){
-                case 1:
-                    consultarSaldo();
-                break;
-                case 2:
-                    realizarRetiro();
-                break;
+            if (opcion == 9) {
+                sessionActive = false;
+                continue;
+            }
+            OperacionStrategy estrategia = estrategias.get(opcion);
+            if (estrategia != null) {
+                estrategia.ejecutar();
+            } else {
+                view.mostrarMensaje("Opción inválida");
             }
         }
     }
