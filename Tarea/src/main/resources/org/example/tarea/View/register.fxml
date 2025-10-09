@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import java.awt.ScrollPane?>
+<?import java.lang.classfile.Label?>
+<?import java.awt.Font?>
+<?import java.awt.TextField?>
+<?import java.awt.Button?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.PasswordField?>
+<ScrollPane xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.tarea.Controller.RegisterController">
+    <content>
+        <VBox alignment="CENTER" spacing="15.0" style="-fx-padding: 20;">
+
+            <Label text="Registro en CarApp" textFill="#2d5ba3">
+                <font>
+                    <Font name="System Bold" size="24.0" />
+                </font>
+            </Label>
+
+            <Label text="Únete a nuestra comunidad de amantes de los coches" textFill="#666" />
+
+            <VBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-padding: 25; -fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #ddd; -fx-border-radius: 10; -fx-pref-width: 400;">
+                <children>
+                    <Label text="Nombre Completo:" style="-fx-font-weight: bold;" />
+                    <TextField fx:id="nombreCompletoField" promptText="Ingrese su nombre completo" />
+
+                    <Label text="Fecha de Nacimiento:" style="-fx-font-weight: bold;" />
+                    <DatePicker fx:id="fechaNacimientoPicker" promptText="Seleccione su fecha de nacimiento" />
+
+                    <Label text="Nombre de Usuario:" style="-fx-font-weight: bold;" />
+                    <TextField fx:id="usernameField" promptText="Elija un nombre de usuario" />
+
+                    <Label text="Correo Electrónico:" style="-fx-font-weight: bold;" />
+                    <TextField fx:id="correoField" promptText="Ingrese su correo electrónico" />
+
+                    <Label text="Contraseña:" style="-fx-font-weight: bold;" />
+                    <PasswordField fx:id="passwordField" promptText="Cree una contraseña segura" />
+
+                    <Label text="Confirmar Contraseña:" style="-fx-font-weight: bold;" />
+                    <PasswordField fx:id="confirmPasswordField" promptText="Repita su contraseña" />
+
+                    <Label text="La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y caracteres especiales."
+                           style="-fx-text-fill: #666; -fx-font-size: 11px; -fx-wrap-text: true;" />
+                </children>
+            </VBox>
+
+            <Button fx:id="registerButton" mnemonicParsing = "false" onAction="#handleRegister" text="Registrarse"
+                    style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold; -fx-pref-width: 400; -fx-pref-height: 35;" />
+
+            <Button mnemonicParsing="false" onAction="#handleBackToLogin" text="← Volver al Login"
+                    style="-fx-background-color: transparent; -fx-text-fill: #2d5ba3; -fx-border-color: transparent;" />
+        </VBox>
+    </content>
+</ScrollPane>

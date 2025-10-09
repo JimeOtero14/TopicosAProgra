@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import java.lang.classfile.Label?>
+<?import java.awt.Button?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="25.0" xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.tarea.Controller.WelcomeController"
+      style="-fx-background-color: #f8f9fa;">
+
+    <children>
+        <Label text="🚗" style="-fx-font-size: 48px;" />
+
+        <Label fx:id="welcomeLabel" text="¡Bienvenido a CarApp!"
+               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2d5ba3;" />
+
+        <VBox alignment="CENTER" spacing="15.0" style="-fx-padding: 25; -fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #ddd; -fx-border-radius: 10; -fx-pref-width: 500;">
+            <children>
+                <Label fx:id="userInfoLabel" text="Información del usuario"
+                       style="-fx-text-fill: #333; -fx-font-size: 14px;" />
+
+                <Label fx:id="registrationDateLabel" text="Fecha de registro"
+                       style="-fx-text-fill: #666; -fx-font-size: 12px;" />
+
+                <Label text="¡Explora nuestra comunidad de amantes de los coches!"
+                       style="-fx-text-fill: #28a745; -fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 20 0 0 0;" />
+            </children>
+        </VBox>
+
+        <Button mnemonicParsing="false" onAction="#handleLogout" text="Cerrar Sesión"
+                style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-pref-width: 200; -fx-pref-height: 35;" />
+    </children>
+
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+</VBox>
