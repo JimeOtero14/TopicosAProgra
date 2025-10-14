@@ -1,100 +1,108 @@
-package  org.example.tarea.Controller;
+package org.example.tarea.Controller;
 
-import org.example.tarea.Service.*;
-import org.example.tarea.Utils.ValidationUtils;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
+import org.example.tarea.DAO.UsuarioDAO;
+import org.example.tarea.Factory.DAOFactory;
+import org.example.tarea.Model.Usuario;
+import org.example.tarea.Util.PasswordUtil;
 
-import java.io.IOException;
+import java.util.Optional;
 
 public class LoginController {
 
     @FXML private TextField usernameField;
     @FXML private PasswordField passwordField;
+    @FXML private Label errorLabel;
+    @FXML private Button loginButton;
+    @FXML private Button registerButton;
 
-    private userservice authService;
-
-    public LoginController() {
-        this.authService = AuthService.getInstance();
-    }
+    private UsuarioDAO usuarioDAO;
 
     @FXML
-    private void initialize() {
-        // Inicialización si es necesaria
+    public void initialize() {
+        // Inicializar DAO usando Factory Pattern
+        DAOFactory factory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
+        usuarioDAO = factory.getUsuarioDAO();
+
+        // Limpiar mensaje de error al inicio
+        errorLabel.setText("");
     }
 
     @FXML
     private void handleLogin() {
-        String usernameOrEmail = usernameField.getText();
+        errorLabel.setText("");
+
+        String usernameOrEmail = usernameField.getText().trim();
         String password = passwordField.getText();
 
-        if (ValidationUtils.isNullOrEmpty(usernameOrEmail) || ValidationUtils.isNullOrEmpty(password)) {
-            showAlert("Error", "Por favor ingrese usuario/correo y contraseña");
+        // Validar campos vacíos
+        if (usernameOrEmail.isEmpty() || password.isEmpty()) {
+            errorLabel.setText("Por favor, completa todos los campos");
             return;
         }
 
-        boolean isAuthenticated = authService.login(usernameOrEmail, password);
+        try {
+            // Buscar usuario en la base de datos
+            Optional<Usuario> usuarioOpt = usuarioDAO.buscarPorUsernameOCorreo(usernameOrEmail);
 
-        if (isAuthenticated) {
-            openWelcomeWindow();
-        } else {
-            showAlert("Error de autenticación",
-                    "Usuario/correo o contraseña incorrectos. Por favor verifique sus credenciales.");
+            if (usuarioOpt.isPresent()) {
+                Usuario usuario = usuarioOpt.get();
+
+                // Verificar contraseña usando BCrypt
+                if (PasswordUtil.checkPassword(password, usuario.getPasswordHash())) {
+                    // Login exitoso
+                    abrirVentanaBienvenida(usuario);
+                } else {
+                    errorLabel.setText("Contraseña incorrecta");
+                }
+            } else {
+                errorLabel.setText("Usuario no encontrado");
+            }
+
+        } catch (Exception e) {
+            errorLabel.setText("Error al iniciar sesión: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     @FXML
-    private void handleRegister() {
+    private void handleGoToRegister() {
         try {
-            Stage currentStage = (Stage) usernameField.getScene().getWindow();
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/register.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tarea/View/register.fxml"));
             Parent root = loader.load();
 
-            Stage stage = new Stage();
-            stage.setTitle("Registro - CarApp");
-            stage.setScene(new Scene(root, 500, 600));
-            stage.show();
+            Stage stage = (Stage) registerButton.getScene().getWindow();
+            stage.setScene(new Scene(root, 500, 700));
+            stage.setTitle("Registro de Usuario");
 
-            currentStage.close();
-
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Error", "No se pudo cargar la ventana de registro");
+            errorLabel.setText("Error al cargar ventana de registro");
         }
     }
 
-    private void openWelcomeWindow() {
+    private void abrirVentanaBienvenida(Usuario usuario) {
         try {
-            Stage currentStage = (Stage) usernameField.getScene().getWindow();
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/welcome.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tarea/View/welcome.fxml"));
             Parent root = loader.load();
 
-            Stage stage = new Stage();
-            stage.setTitle("Bienvenido - CarApp");
-            stage.setScene(new Scene(root, 600, 400));
-            stage.show();
+            // Pasar datos del usuario al controlador de bienvenida
+            WelcomeController welcomeController = loader.getController();
+            welcomeController.setUsuario(usuario);
 
-            currentStage.close();
+            Stage stage = (Stage) loginButton.getScene().getWindow();
+            stage.setScene(new Scene(root, 600, 500));
+            stage.setTitle("Bienvenido");
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            showAlert("Error", "No se pudo cargar la ventana de bienvenida");
+            errorLabel.setText("Error al cargar ventana de bienvenida");
         }
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

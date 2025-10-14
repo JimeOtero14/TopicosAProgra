@@ -5,35 +5,44 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.example.tarea.DBConfig.DataConfig;
-
-import java.net.URL;
 
 public class Main extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        System.out.println("Iniciando CarApp...");
+    public void start(Stage primaryStage) {
+        try {
+            // IMPORTANTE: La ruta debe coincidir con la ubicación del FXML
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tarea/View/login.fxml"));
 
-        // Inicializar la base de datos
-        DataConfig.initializeDatabase();
+            // Verificar si el recurso existe
+            if (loader.getLocation() == null) {
+                System.err.println("ERROR: No se encontró el archivo login.fxml");
+                System.err.println("Verifica que esté en: src/main/resources/org/example/tarea/login.fxml");
+                return;
+            }
 
-        // Cargar FXML desde resources
-        URL fxmlUrl = getClass().getResource("/com/carapp/views/login.fxml");
-        if (fxmlUrl == null) {
-            System.err.println("No se pudo encontrar login.fxml");
-            return;
+            Parent root = loader.load();
+            Scene scene = new Scene(root, 450, 500);
+
+            primaryStage.setTitle("Sistema de Login");
+            primaryStage.setScene(scene);
+            primaryStage.setResizable(false);
+            primaryStage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error al iniciar la aplicación: " + e.getMessage());
         }
+    }
 
-        Parent root = FXMLLoader.load(fxmlUrl);
-        primaryStage.setTitle("CarApp - Login");
-        primaryStage.setScene(new Scene(root, 400, 500));
-        primaryStage.setResizable(false);
-        primaryStage.show();
+    @Override
+    public void stop() {
+        // Cerrar conexión de base de datos al cerrar la aplicación
+        org.example.tarea.Util.DatabaseConnection.closeConnection();
+        System.out.println("Aplicación cerrada correctamente");
     }
 
     public static void main(String[] args) {
-        System.out.println("Lanzando aplicación...");
         launch(args);
     }
 }

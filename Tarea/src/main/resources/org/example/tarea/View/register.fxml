@@ -1,59 +1,86 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import java.awt.ScrollPane?>
-<?import java.lang.classfile.Label?>
-<?import java.awt.Font?>
-<?import java.awt.TextField?>
-<?import java.awt.Button?>
-<?import javafx.scene.layout.VBox?>
-
-<?import javafx.scene.control.DatePicker?>
-<?import javafx.scene.control.PasswordField?>
-<ScrollPane xmlns="http://javafx.com/javafx/11.0.1"
+<ScrollPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.example.tarea.Controller.RegisterController">
-    <content>
-        <VBox alignment="CENTER" spacing="15.0" style="-fx-padding: 20;">
+            fx:controller="org.example.tarea.Controller.RegisterController"
+            fitToWidth="true"
+            style="-fx-background-color: #f0f0f0;">
 
-            <Label text="Registro en CarApp" textFill="#2d5ba3">
-                <font>
-                    <Font name="System Bold" size="24.0" />
-                </font>
-            </Label>
+    <VBox alignment="CENTER" spacing="20" style="-fx-background-color: #f0f0f0;">
 
-            <Label text="Únete a nuestra comunidad de amantes de los coches" textFill="#666" />
+        <padding>
+            <Insets top="30" right="50" bottom="30" left="50"/>
+        </padding>
 
-            <VBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-padding: 25; -fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #ddd; -fx-border-radius: 10; -fx-pref-width: 400;">
-                <children>
-                    <Label text="Nombre Completo:" style="-fx-font-weight: bold;" />
-                    <TextField fx:id="nombreCompletoField" promptText="Ingrese su nombre completo" />
+        <!-- Título -->
+        <Label text="Registro de Usuario" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
 
-                    <Label text="Fecha de Nacimiento:" style="-fx-font-weight: bold;" />
-                    <DatePicker fx:id="fechaNacimientoPicker" promptText="Seleccione su fecha de nacimiento" />
+        <!-- Panel de formulario -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 30;">
 
-                    <Label text="Nombre de Usuario:" style="-fx-font-weight: bold;" />
-                    <TextField fx:id="usernameField" promptText="Elija un nombre de usuario" />
-
-                    <Label text="Correo Electrónico:" style="-fx-font-weight: bold;" />
-                    <TextField fx:id="correoField" promptText="Ingrese su correo electrónico" />
-
-                    <Label text="Contraseña:" style="-fx-font-weight: bold;" />
-                    <PasswordField fx:id="passwordField" promptText="Cree una contraseña segura" />
-
-                    <Label text="Confirmar Contraseña:" style="-fx-font-weight: bold;" />
-                    <PasswordField fx:id="confirmPasswordField" promptText="Repita su contraseña" />
-
-                    <Label text="La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y caracteres especiales."
-                           style="-fx-text-fill: #666; -fx-font-size: 11px; -fx-wrap-text: true;" />
-                </children>
+            <!-- Nombre Completo -->
+            <VBox spacing="5">
+                <Label text="Nombre Completo:" style="-fx-font-size: 14px; -fx-text-fill: #555555;"/>
+                <TextField fx:id="nombreCompletoField" promptText="Ej: Juan Pérez García"
+                           style="-fx-font-size: 14px; -fx-pref-width: 350;"/>
             </VBox>
 
-            <Button fx:id="registerButton" mnemonicParsing = "false" onAction="#handleRegister" text="Registrarse"
-                    style="-fx-background-color: #28a745; -fx-text-fill: white; -fx-font-weight: bold; -fx-pref-width: 400; -fx-pref-height: 35;" />
+            <!-- Fecha de Nacimiento -->
+            <VBox spacing="5">
+                <Label text="Fecha de Nacimiento:" style="-fx-font-size: 14px; -fx-text-fill: #555555;"/>
+                <DatePicker fx:id="fechaNacimientoPicker" promptText="Selecciona tu fecha de nacimiento"
+                            style="-fx-font-size: 14px; -fx-pref-width: 350;"/>
+            </VBox>
 
-            <Button mnemonicParsing="false" onAction="#handleBackToLogin" text="← Volver al Login"
-                    style="-fx-background-color: transparent; -fx-text-fill: #2d5ba3; -fx-border-color: transparent;" />
+            <!-- Username -->
+            <VBox spacing="5">
+                <Label text="Nombre de Usuario:" style="-fx-font-size: 14px; -fx-text-fill: #555555;"/>
+                <TextField fx:id="usernameField" promptText="Ej: juanperez123"
+                           style="-fx-font-size: 14px; -fx-pref-width: 350;"/>
+            </VBox>
+
+            <!-- Correo -->
+            <VBox spacing="5">
+                <Label text="Correo Electrónico:" style="-fx-font-size: 14px; -fx-text-fill: #555555;"/>
+                <TextField fx:id="correoField" promptText="Ej: juan@ejemplo.com"
+                           style="-fx-font-size: 14px; -fx-pref-width: 350;"/>
+            </VBox>
+
+            <!-- Contraseña -->
+            <VBox spacing="5">
+                <Label text="Contraseña:" style="-fx-font-size: 14px; -fx-text-fill: #555555;"/>
+                <PasswordField fx:id="passwordField" promptText="Mínimo 8 caracteres"
+                               style="-fx-font-size: 14px; -fx-pref-width: 350;"/>
+                <Label text="Debe contener: mayúsculas, minúsculas, números y caracteres especiales"
+                       style="-fx-font-size: 11px; -fx-text-fill: #777777;"/>
+            </VBox>
+
+            <!-- Confirmar Contraseña -->
+            <VBox spacing="5">
+                <Label text="Confirmar Contraseña:" style="-fx-font-size: 14px; -fx-text-fill: #555555;"/>
+                <PasswordField fx:id="confirmPasswordField" promptText="Repite tu contraseña"
+                               style="-fx-font-size: 14px; -fx-pref-width: 350;"/>
+            </VBox>
+
+            <!-- Mensaje de error -->
+            <Label fx:id="errorLabel" style="-fx-text-fill: red; -fx-font-size: 12px;" wrapText="true"/>
+
+            <!-- Mensaje de éxito -->
+            <Label fx:id="successLabel" style="-fx-text-fill: green; -fx-font-size: 12px;" wrapText="true"/>
+
+            <!-- Botones -->
+            <HBox spacing="10" alignment="CENTER">
+                <Button fx:id="registerButton" text="Registrarse" onAction="#handleRegister"
+                        style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;"/>
+                <Button fx:id="backButton" text="Volver al Login" onAction="#handleBackToLogin"
+                        style="-fx-background-color: #9E9E9E; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;"/>
+            </HBox>
         </VBox>
-    </content>
+
+    </VBox>
+
 </ScrollPane>

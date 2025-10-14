@@ -1,4 +1,4 @@
-package  org.example.tarea.Controller;
+package org.example.tarea.Controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -6,11 +6,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import org.example.tarea.Service.PasswordService;
-import org.example.tarea.Service.userservice;
-import org.example.tarea.Utils.ValidationUtils;
+import org.example.tarea.DAO.UsuarioDAO;
+import org.example.tarea.Factory.DAOFactory;
+import org.example.tarea.Model.Usuario;
+import org.example.tarea.Strategy.*;
+import org.example.tarea.Util.PasswordUtil;
 
-import java.io.IOException;
 import java.time.LocalDate;
 
 public class RegisterController {
@@ -21,139 +22,141 @@ public class RegisterController {
     @FXML private TextField correoField;
     @FXML private PasswordField passwordField;
     @FXML private PasswordField confirmPasswordField;
+    @FXML private Label errorLabel;
+    @FXML private Label successLabel;
     @FXML private Button registerButton;
+    @FXML private Button backButton;
 
-    private userservice userService;
-
-    public RegisterController() {
-        this.userService = userservice.getInstance();
-    }
+    private UsuarioDAO usuarioDAO;
+    private ValidationStrategy emailValidator;
+    private ValidationStrategy passwordValidator;
+    private ValidationStrategy usernameValidator;
+    private ValidationStrategy nombreValidator;
 
     @FXML
-    private void initialize() {
-        // Configurar el DatePicker para que no permita fechas futuras
-        fechaNacimientoPicker.setDayCellFactory(picker -> new DateCell() {
-            @Override
-            public void updateItem(LocalDate date, boolean empty) {
-                super.updateItem(date, empty);
-                setDisable(empty || date.isAfter(LocalDate.now()));
-            }
-        });
+    public void initialize() {
+        DAOFactory factory = DAOFactory.getDAOFactory(DAOFactory.MYSQL);
+        usuarioDAO = factory.getUsuarioDAO();
+
+        emailValidator = new EmailValidationStrategy();
+        passwordValidator = new PasswordValidationStrategy();
+        usernameValidator = new UsernameValidationStrategy();
+        nombreValidator = new NotEmptyValidation("Nombre completo");
+
+        errorLabel.setText("");
+        successLabel.setText("");
     }
 
     @FXML
     private void handleRegister() {
-        if (!validateForm()) {
+        errorLabel.setText("");
+        successLabel.setText("");
+
+        String nombreCompleto = nombreCompletoField.getText().trim();
+        LocalDate fechaNacimiento = fechaNacimientoPicker.getValue();
+        String username = usernameField.getText().trim();
+        String correo = correoField.getText().trim();
+        String password = passwordField.getText();
+        String confirmPassword = confirmPasswordField.getText();
+
+        if (!nombreValidator.validate(nombreCompleto)) {
+            errorLabel.setText(nombreValidator.getErrorMessage());
             return;
         }
 
-        String nombreCompleto = nombreCompletoField.getText();
-        LocalDate fechaNacimiento = fechaNacimientoPicker.getValue();
-        String username = usernameField.getText();
-        String correo = correoField.getText();
-        String password = passwordField.getText();
+        if (fechaNacimiento == null) {
+            errorLabel.setText("Debes seleccionar tu fecha de nacimiento");
+            return;
+        }
 
-        boolean success = userService.registerUser(username, correo, password, nombreCompleto, fechaNacimiento);
+        if (fechaNacimiento.isAfter(LocalDate.now().minusYears(13))) {
+            errorLabel.setText("Debes tener al menos 13 años para registrarte");
+            return;
+        }
 
-        if (success) {
-            showAlert(Alert.AlertType.INFORMATION, "Registro exitoso",
-                    "¡Tu cuenta ha sido creada exitosamente! Ahora puedes iniciar sesión.");
-            openLoginWindow();
-        } else {
-            showAlert(Alert.AlertType.ERROR, "Error en el registro",
-                    "Ha ocurrido un error al crear tu cuenta. Por favor intenta nuevamente.");
+        if (!usernameValidator.validate(username)) {
+            errorLabel.setText(usernameValidator.getErrorMessage());
+            return;
+        }
+
+        if (!emailValidator.validate(correo)) {
+            errorLabel.setText(emailValidator.getErrorMessage());
+            return;
+        }
+
+        if (!passwordValidator.validate(password)) {
+            errorLabel.setText(passwordValidator.getErrorMessage());
+            return;
+        }
+
+        if (!password.equals(confirmPassword)) {
+            errorLabel.setText("Las contraseñas no coinciden");
+            return;
+        }
+
+        try {
+            if (usuarioDAO.existeUsername(username)) {
+                errorLabel.setText("El nombre de usuario ya está registrado");
+                return;
+            }
+
+            if (usuarioDAO.existeCorreo(correo)) {
+                errorLabel.setText("El correo electrónico ya está registrado");
+                return;
+            }
+
+            String passwordHash = PasswordUtil.hashPassword(password);
+
+            Usuario nuevoUsuario = new Usuario(
+                    username,
+                    correo,
+                    passwordHash,
+                    nombreCompleto,
+                    fechaNacimiento
+            );
+
+            usuarioDAO.insertarUsuario(nuevoUsuario);
+
+            successLabel.setText("¡Registro exitoso! Puedes iniciar sesión ahora.");
+            limpiarCampos();
+
+            new Thread(() -> {
+                try {
+                    Thread.sleep(2000);
+                    javafx.application.Platform.runLater(this::handleBackToLogin);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+
+        } catch (Exception e) {
+            errorLabel.setText("Error al registrar usuario: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     @FXML
     private void handleBackToLogin() {
-        openLoginWindow();
-    }
-
-    private boolean validateForm() {
-        // Validar campos vacíos
-        if (ValidationUtils.isNullOrEmpty(nombreCompletoField.getText()) ||
-                fechaNacimientoPicker.getValue() == null ||
-                ValidationUtils.isNullOrEmpty(usernameField.getText()) ||
-                ValidationUtils.isNullOrEmpty(correoField.getText()) ||
-                ValidationUtils.isNullOrEmpty(passwordField.getText()) ||
-                ValidationUtils.isNullOrEmpty(confirmPasswordField.getText())) {
-
-            showAlert(Alert.AlertType.ERROR, "Campos incompletos",
-                    "Por favor complete todos los campos del formulario.");
-            return false;
-        }
-
-        // Validar formato de correo
-        if (!ValidationUtils.isValidEmail(correoField.getText())) {
-            showAlert(Alert.AlertType.ERROR, "Correo inválido",
-                    "Por favor ingrese un correo electrónico válido.");
-            return false;
-        }
-
-        // Validar que las contraseñas coincidan
-        if (!passwordField.getText().equals(confirmPasswordField.getText())) {
-            showAlert(Alert.AlertType.ERROR, "Contraseñas no coinciden",
-                    "Las contraseñas ingresadas no coinciden. Por favor verifique.");
-            return false;
-        }
-
-        // Validar fortaleza de la contraseña
-        if (!PasswordService.isStrongPassword(passwordField.getText())) {
-            showAlert(Alert.AlertType.ERROR, "Contraseña débil",
-                    "La contraseña debe tener al menos 8 caracteres, incluyendo mayúsculas, minúsculas, números y caracteres especiales.");
-            return false;
-        }
-
-        // Validar que el usuario no exista
-        if (userService.isUsernameTaken(usernameField.getText())) {
-            showAlert(Alert.AlertType.ERROR, "Usuario no disponible",
-                    "El nombre de usuario ya está en uso. Por favor elija otro.");
-            return false;
-        }
-
-        // Validar que el correo no exista
-        if (userService.isEmailTaken(correoField.getText())) {
-            showAlert(Alert.AlertType.ERROR, "Correo ya registrado",
-                    "El correo electrónico ya está registrado. Por favor use otro correo.");
-            return false;
-        }
-
-        // Validar edad (mínimo 18 años)
-        LocalDate fechaNacimiento = fechaNacimientoPicker.getValue();
-        if (fechaNacimiento.plusYears(18).isAfter(LocalDate.now())) {
-            showAlert(Alert.AlertType.ERROR, "Edad insuficiente",
-                    "Debes ser mayor de 18 años para registrarte.");
-            return false;
-        }
-
-        return true;
-    }
-
-    private void openLoginWindow() {
         try {
-            Stage currentStage = (Stage) nombreCompletoField.getScene().getWindow();
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tarea/View/login.fxml"));
             Parent root = loader.load();
 
-            Stage stage = new Stage();
-            stage.setTitle("Login - CarApp");
-            stage.setScene(new Scene(root, 400, 350));
-            stage.show();
+            Stage stage = (Stage) backButton.getScene().getWindow();
+            stage.setScene(new Scene(root, 450, 500));
+            stage.setTitle("Iniciar Sesión");
 
-            currentStage.close();
-
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            errorLabel.setText("Error al cargar ventana de login");
         }
     }
 
-    private void showAlert(Alert.AlertType type, String title, String message) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    private void limpiarCampos() {
+        nombreCompletoField.clear();
+        fechaNacimientoPicker.setValue(null);
+        usernameField.clear();
+        correoField.clear();
+        passwordField.clear();
+        confirmPasswordField.clear();
     }
 }

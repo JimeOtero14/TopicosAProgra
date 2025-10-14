@@ -1,67 +1,54 @@
-package  org.example.tarea.Controller;
+package org.example.tarea.Controller;
 
-import org.example.tarea.Model.User;
-import org.example.tarea.Service.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import org.example.tarea.Model.Usuario;
 
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 
 public class WelcomeController {
 
-    @FXML private Label welcomeLabel;
-    @FXML private Label userInfoLabel;
-    @FXML private Label registrationDateLabel;
+    @FXML private Label nombreUsuarioLabel;
+    @FXML private Label usernameLabel;
+    @FXML private Label fechaRegistroLabel;
+    @FXML private Button logoutButton;
 
-    private userservice authService;
+    private Usuario usuario;
 
-    @FXML
-    private void initialize() {
-        authService = AuthService.getInstance();
-        displayUserInfo();
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
+        mostrarInformacionUsuario();
     }
 
-    private void displayUserInfo() {
-        User currentUser = authService.getCurrentUser();
-        if (currentUser != null) {
-            welcomeLabel.setText("¡Bienvenido a CarApp, " + currentUser.getNombreCompleto() + "!");
+    private void mostrarInformacionUsuario() {
+        if (usuario != null) {
+            nombreUsuarioLabel.setText(usuario.getNombreCompleto());
+            usernameLabel.setText("@" + usuario.getUsername());
 
-            userInfoLabel.setText("Usuario: " + currentUser.getUsername() +
-                    " | Correo: " + currentUser.getCorreo() +
-                    " | Fecha de nacimiento: " +
-                    currentUser.getFechaNacimiento().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
-
-            registrationDateLabel.setText("Te registraste el: " +
-                    currentUser.getFechaRegistro().format(DateTimeFormatter.ofPattern("dd/MM/yyyy 'a las' HH:mm")));
+            if (usuario.getFechaRegistro() != null) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+                String fechaFormateada = usuario.getFechaRegistro().format(formatter);
+                fechaRegistroLabel.setText("Miembro desde: " + fechaFormateada);
+            }
         }
     }
 
     @FXML
     private void handleLogout() {
-        authService.logout();
-        openLoginWindow();
-    }
-
-    private void openLoginWindow() {
         try {
-            Stage currentStage = (Stage) welcomeLabel.getScene().getWindow();
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/views/login.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tarea/View/login.fxml"));
             Parent root = loader.load();
 
-            Stage stage = new Stage();
-            stage.setTitle("Login - CarApp");
-            stage.setScene(new Scene(root, 400, 350));
-            stage.show();
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            stage.setScene(new Scene(root, 450, 500));
+            stage.setTitle("Iniciar Sesión");
 
-            currentStage.close();
-
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

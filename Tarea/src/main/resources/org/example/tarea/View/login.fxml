@@ -1,46 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 
-<?import java.lang.classfile.Label?>
-<?import java.awt.Font?>
-<?import java.awt.Button?>
-<?import java.awt.TextField?>
-<?import java.awt.Insets?>
-<?import javafx.scene.layout.VBox?>
-
-<?import javafx.scene.control.PasswordField?>
-<VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/11.0.1"
+<VBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.example.tarea.Controller.LoginController"
-      style="-fx-background-color: #f8f9fa;">
-
-    <children>
-        <Label text="Carapp" textFill="#2d5ba3">
-            <font>
-                <Font name="System Bold" size="28.0" />
-            </font>
-        </Label>
-
-        <Label text="Tu comunidad de amantes de los coches" textFill="#666" />
-
-        <VBox alignment="CENTER_LEFT" spacing="10.0" style="-fx-padding: 20; -fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #ddd; -fx-border-radius: 10;">
-            <children>
-                <Label text="Usuario o Correo:" style="-fx-font-weight: bold;" />
-                <TextField fx:id="usernameField" promptText="Ingrese su usuario o correo" style="-fx-pref-width: 300;" />
-
-                <Label text="Contraseña:" style="-fx-font-weight: bold;" />
-                <PasswordField fx:id="passwordField" promptText="Ingrese su contraseña" style="-fx-pref-width: 300;" />
-            </children>
-        </VBox>
-
-        <Button mnemonicParsing="false" onAction="#handleLogin" text="Iniciar Sesión"
-                style="-fx-background-color: #2d5ba3; -fx-text-fill: white; -fx-font-weight: bold; -fx-pref-width: 300; -fx-pref-height: 35;" />
-
-        <Button mnemonicParsing="false" onAction="#handleRegister" text="¿No tienes cuenta? Regístrate aquí"
-                style="-fx-background-color: transparent; -fx-text-fill: #2d5ba3; -fx-border-color: transparent; -fx-underline: true;" />
-    </children>
+      alignment="CENTER"
+      spacing="20"
+      style="-fx-background-color: #f0f0f0;">
 
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+        <Insets top="50" right="50" bottom="50" left="50"/>
     </padding>
+
+    <!-- Título -->
+    <Label text="Iniciar Sesión" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #333333;"/>
+
+    <!-- Panel de formulario -->
+    <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 30;">
+
+        <!-- Username o Email -->
+        <VBox spacing="5">
+            <Label text="Usuario o Correo:" style="-fx-font-size: 14px; -fx-text-fill: #555555;"/>
+            <TextField fx:id="usernameField" promptText="Ingresa tu usuario o correo"
+                       style="-fx-font-size: 14px; -fx-pref-width: 300;"/>
+        </VBox>
+
+        <!-- Contraseña -->
+        <VBox spacing="5">
+            <Label text="Contraseña:" style="-fx-font-size: 14px; -fx-text-fill: #555555;"/>
+            <PasswordField fx:id="passwordField" promptText="Ingresa tu contraseña"
+                           style="-fx-font-size: 14px; -fx-pref-width: 300;"/>
+        </VBox>
+
+        <!-- Mensaje de error -->
+        <Label fx:id="errorLabel" style="-fx-text-fill: red; -fx-font-size: 12px;" wrapText="true"/>
+
+        <!-- Botones -->
+        <HBox spacing="10" alignment="CENTER">
+            <Button fx:id="loginButton" text="Iniciar Sesión" onAction="#handleLogin"
+                    style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;"/>
+            <Button fx:id="registerButton" text="Registrarse" onAction="#handleGoToRegister"
+                    style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 5;"/>
+        </HBox>
+    </VBox>
+
 </VBox>

@@ -1,39 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<?import java.lang.classfile.Label?>
-<?import java.awt.Button?>
-<?import javafx.scene.layout.VBox?>
-
-<VBox alignment="CENTER" spacing="25.0" xmlns="http://javafx.com/javafx/11.0.1"
+<VBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.example.tarea.Controller.WelcomeController"
-      style="-fx-background-color: #f8f9fa;">
-
-    <children>
-        <Label text="🚗" style="-fx-font-size: 48px;" />
-
-        <Label fx:id="welcomeLabel" text="¡Bienvenido a CarApp!"
-               style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2d5ba3;" />
-
-        <VBox alignment="CENTER" spacing="15.0" style="-fx-padding: 25; -fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #ddd; -fx-border-radius: 10; -fx-pref-width: 500;">
-            <children>
-                <Label fx:id="userInfoLabel" text="Información del usuario"
-                       style="-fx-text-fill: #333; -fx-font-size: 14px;" />
-
-                <Label fx:id="registrationDateLabel" text="Fecha de registro"
-                       style="-fx-text-fill: #666; -fx-font-size: 12px;" />
-
-                <Label text="¡Explora nuestra comunidad de amantes de los coches!"
-                       style="-fx-text-fill: #28a745; -fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 20 0 0 0;" />
-            </children>
-        </VBox>
-
-        <Button mnemonicParsing="false" onAction="#handleLogout" text="Cerrar Sesión"
-                style="-fx-background-color: #dc3545; -fx-text-fill: white; -fx-font-weight: bold; -fx-pref-width: 200; -fx-pref-height: 35;" />
-    </children>
+      alignment="CENTER"
+      spacing="30"
+      style="-fx-background-color: linear-gradient(to bottom, #667eea 0%, #764ba2 100%);">
 
     <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+        <Insets top="80" right="50" bottom="80" left="50"/>
     </padding>
+
+    <!-- Panel de bienvenida -->
+    <VBox spacing="20" alignment="CENTER" style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 40;">
+
+        <!-- Título de bienvenida -->
+        <Label text="¡Bienvenido!" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #667eea;"/>
+
+        <!-- Nombre del usuario -->
+        <Label fx:id="nombreUsuarioLabel" style="-fx-font-size: 24px; -fx-text-fill: #333333;"/>
+
+        <!-- Información adicional -->
+        <VBox spacing="10" alignment="CENTER">
+            <Label fx:id="usernameLabel" style="-fx-font-size: 16px; -fx-text-fill: #666666;"/>
+            <Label fx:id="fechaRegistroLabel" style="-fx-font-size: 14px; -fx-text-fill: #888888;"/>
+        </VBox>
+
+        <!-- Separador -->
+        <Separator prefWidth="300"/>
+
+        <!-- Mensaje -->
+        <Label text="Has iniciado sesión correctamente"
+               style="-fx-font-size: 14px; -fx-text-fill: #555555;"/>
+
+        <!-- Botón cerrar sesión -->
+        <Button fx:id="logoutButton" text="Cerrar Sesión" onAction="#handleLogout"
+                style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 12 30; -fx-background-radius: 5;"/>
+    </VBox>
+
 </VBox>
