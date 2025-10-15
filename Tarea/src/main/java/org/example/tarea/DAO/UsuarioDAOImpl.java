@@ -2,7 +2,6 @@ package org.example.tarea.DAO;
 
 import org.example.tarea.Model.Usuario;
 import org.example.tarea.Util.DatabaseConnection;
-
 import java.sql.*;
 import java.util.Optional;
 

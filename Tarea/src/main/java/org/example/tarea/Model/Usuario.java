@@ -5,12 +5,12 @@ import java.time.LocalDateTime;
 
 public class Usuario {
     private int id;
-    private String username;
-    private String correo;
-    private String passwordHash;
+    private static String username;
+    private static String correo;
+    private static String passwordHash;
     private LocalDateTime fechaRegistro;
-    private String nombreCompleto;
-    private LocalDate fechaNacimiento;
+    private static String nombreCompleto;
+    private static LocalDate fechaNacimiento;
 
     // Constructor vacío
     public Usuario() {}
@@ -34,7 +34,7 @@ public class Usuario {
         this.id = id;
     }
 
-    public String getUsername() {
+    public static String getUsername() {
         return username;
     }
 
@@ -42,7 +42,7 @@ public class Usuario {
         this.username = username;
     }
 
-    public String getCorreo() {
+    public static String getCorreo() {
         return correo;
     }
 
@@ -50,7 +50,7 @@ public class Usuario {
         this.correo = correo;
     }
 
-    public String getPasswordHash() {
+    public static String getPasswordHash() {
         return passwordHash;
     }
 
@@ -66,7 +66,7 @@ public class Usuario {
         this.fechaRegistro = fechaRegistro;
     }
 
-    public String getNombreCompleto() {
+    public static String getNombreCompleto() {
         return nombreCompleto;
     }
 
@@ -74,7 +74,7 @@ public class Usuario {
         this.nombreCompleto = nombreCompleto;
     }
 
-    public LocalDate getFechaNacimiento() {
+    public static LocalDate getFechaNacimiento() {
         return fechaNacimiento;
     }
 

@@ -5,13 +5,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.example.tarea.Terminal.terminalView;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
         try {
-            // IMPORTANTE: La ruta debe coincidir con la ubicación del FXML
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/org/example/tarea/View/login.fxml"));
 
             // Verificar si el recurso existe
@@ -33,6 +33,7 @@ public class Main extends Application {
             e.printStackTrace();
             System.err.println("Error al iniciar la aplicación: " + e.getMessage());
         }
+
     }
 
     @Override
@@ -43,6 +44,16 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
+        Thread TerminalThread = new Thread(() -> {
+            try {
+                terminalView.run();
+            } catch (Throwable t) {
+                System.err.println("Programa terminal finalizó: " + t.getMessage());
+            }
+        }, "Terminal-Thread");
+        // Hilo daemon para no bloquear el cierre de la app JavaFX, de no tener este hilo  JavaFX no podría cerrarse hasta que la terminal termine manualmente
+        TerminalThread.setDaemon(true);
+        TerminalThread.start();
         launch(args);
     }
 }

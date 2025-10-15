@@ -54,7 +54,7 @@ public class LoginController {
             if (usuarioOpt.isPresent()) {
                 Usuario usuario = usuarioOpt.get();
 
-                // Verificar contraseña usando BCrypt
+                // Verificar contraseña
                 if (PasswordUtil.checkPassword(password, usuario.getPasswordHash())) {
                     // Login exitoso
                     abrirVentanaBienvenida(usuario);
