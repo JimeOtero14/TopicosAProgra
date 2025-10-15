@@ -1,4 +1,4 @@
-package org.example.tarea.Terminal;
+package org.example.tarea.TerminalBuilder;
 
 import org.example.tarea.DAO.UsuarioDAO;
 import org.example.tarea.Factory.DAOFactory;
@@ -17,6 +17,7 @@ import java.util.Scanner;
 
 public class terminalView {
 
+    //Patrón implementado en toda esta clase es Builder para crear objetos de forma más legible
     private final UsuarioDAO usuarioDAO;
     private final ValidationStrategy emailValidator = new EmailValidationStrategy();
     private final ValidationStrategy passwordValidator = new PasswordValidationStrategy();
@@ -126,13 +127,10 @@ public class terminalView {
             }
 
             String passwordHash = PasswordUtil.hashPassword(password);
-            Usuario nuevoUsuario = new Usuario(
-                    username,
-                    correo,
-                    passwordHash,
-                    nombreCompleto,
-                    fechaNacimiento
-            );
+            Usuario nuevoUsuario = Usuario.builder(username, correo, passwordHash)
+                    .setNombreCompleto(nombreCompleto)
+                    .setFechaNacimiento(fechaNacimiento)
+                    .build();
 
             usuarioDAO.insertarUsuario(nuevoUsuario);
             println("¡Registro exitoso! Ahora puedes iniciar sesión.");

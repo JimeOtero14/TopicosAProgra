@@ -5,17 +5,18 @@ import java.time.LocalDateTime;
 
 public class Usuario {
     private int id;
-    private static String username;
-    private static String correo;
-    private static String passwordHash;
+    private String username;
+    private String correo;
+    private String passwordHash;
     private LocalDateTime fechaRegistro;
-    private static String nombreCompleto;
-    private static LocalDate fechaNacimiento;
+    private String nombreCompleto;
+    private LocalDate fechaNacimiento;
 
-    // Constructor vacío
+
+    // Constructor vacío (este es necesario para DAO porque así se puede llevar a cabo la compatibilidad entre frameworks y bibliotecas)
     public Usuario() {}
 
-    // Constructor completo
+    // Constructor para nuevo usuario
     public Usuario(String username, String correo, String passwordHash,
                    String nombreCompleto, LocalDate fechaNacimiento) {
         this.username = username;
@@ -23,9 +24,97 @@ public class Usuario {
         this.passwordHash = passwordHash;
         this.nombreCompleto = nombreCompleto;
         this.fechaNacimiento = fechaNacimiento;
+        this.fechaRegistro = LocalDateTime.now();
     }
 
-    // Getters y Setters
+    // Constructor completo
+    public Usuario(int id, String username, String correo, String passwordHash,
+                   LocalDateTime fechaRegistro, String nombreCompleto, LocalDate fechaNacimiento) {
+        this.id = id;
+        this.username = username;
+        this.correo = correo;
+        this.passwordHash = passwordHash;
+        this.fechaRegistro = fechaRegistro;
+        this.nombreCompleto = nombreCompleto;
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+    // Patrón Builder
+    public static class UsuarioBuilder {
+        private String username;
+        private String correo;
+        private String passwordHash;
+        private int id = 0;
+        private LocalDateTime fechaRegistro;
+        private String nombreCompleto;
+        private LocalDate fechaNacimiento;
+
+        // Métodos de construcción (fluent interface)
+        public UsuarioBuilder setUsername(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public UsuarioBuilder setCorreo(String correo) {
+            this.correo = correo;
+            return this;
+        }
+
+        public UsuarioBuilder setPasswordHash(String passwordHash) {
+            this.passwordHash = passwordHash;
+            return this;
+        }
+
+        public UsuarioBuilder setId(int id) {
+            this.id = id;
+            return this;
+        }
+
+        public UsuarioBuilder setFechaRegistro(LocalDateTime fechaRegistro) {
+            this.fechaRegistro = fechaRegistro;
+            return this;
+        }
+
+        public UsuarioBuilder setNombreCompleto(String nombreCompleto) {
+            this.nombreCompleto = nombreCompleto;
+            return this;
+        }
+
+        public UsuarioBuilder setFechaNacimiento(LocalDate fechaNacimiento) {
+            this.fechaNacimiento = fechaNacimiento;
+            return this;
+        }
+
+        // Metodo build con validaciones
+        public Usuario build() {
+            if (username == null || username.trim().isEmpty()) {
+                throw new IllegalArgumentException("Username no puede ser nulo o vacío");
+            }
+            if (correo == null || correo.trim().isEmpty()) {
+                throw new IllegalArgumentException("Correo no puede ser nulo o vacío");
+            }
+            if (passwordHash == null || passwordHash.trim().isEmpty()) {
+                throw new IllegalArgumentException("PasswordHash no puede ser nulo o vacío");
+            }
+
+            // Usar constructor apropiado
+            if (id > 0 && fechaRegistro != null) {
+                return new Usuario(id, username, correo, passwordHash, fechaRegistro, nombreCompleto, fechaNacimiento);
+            } else {
+                Usuario usuario = new Usuario(username, correo, passwordHash, nombreCompleto, fechaNacimiento);
+                if (fechaRegistro != null) {
+                    usuario.setFechaRegistro(fechaRegistro);
+                }
+                return usuario;
+            }
+        }
+    }
+
+    // Metodo estático para obtener un builder
+    public static UsuarioBuilder builder(String username, String correo, String passwordHash) {
+        return new UsuarioBuilder();
+    }
+
     public int getId() {
         return id;
     }
@@ -34,7 +123,7 @@ public class Usuario {
         this.id = id;
     }
 
-    public static String getUsername() {
+    public String getUsername() {
         return username;
     }
 
@@ -42,7 +131,7 @@ public class Usuario {
         this.username = username;
     }
 
-    public static String getCorreo() {
+    public String getCorreo() {
         return correo;
     }
 
@@ -50,7 +139,7 @@ public class Usuario {
         this.correo = correo;
     }
 
-    public static String getPasswordHash() {
+    public String getPasswordHash() {
         return passwordHash;
     }
 
@@ -66,7 +155,7 @@ public class Usuario {
         this.fechaRegistro = fechaRegistro;
     }
 
-    public static String getNombreCompleto() {
+    public String getNombreCompleto() {
         return nombreCompleto;
     }
 
@@ -74,12 +163,24 @@ public class Usuario {
         this.nombreCompleto = nombreCompleto;
     }
 
-    public static LocalDate getFechaNacimiento() {
+    public LocalDate getFechaNacimiento() {
         return fechaNacimiento;
     }
 
     public void setFechaNacimiento(LocalDate fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
+    }
+
+    // Metodo para crear usando Builder
+    public static Usuario crearUsuario(String username, String correo, String passwordHash,
+                                       String nombreCompleto, LocalDate fechaNacimiento) {
+        return Usuario.builder(username, correo, passwordHash)
+                .setUsername(username)
+                .setCorreo(correo)
+                .setPasswordHash(passwordHash)
+                .setNombreCompleto(nombreCompleto)
+                .setFechaNacimiento(fechaNacimiento)
+                .build();
     }
 
     @Override
@@ -90,5 +191,18 @@ public class Usuario {
                 ", nombreCompleto='" + nombreCompleto + '\'' +
                 ", fechaRegistro=" + fechaRegistro +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Usuario usuario = (Usuario) o;
+        return id == usuario.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
     }
 }

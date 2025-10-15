@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.example.tarea.Terminal.terminalView;
+import org.example.tarea.TerminalBuilder.terminalView;
 
 public class Main extends Application {
 
@@ -51,7 +51,8 @@ public class Main extends Application {
                 System.err.println("Programa terminal finalizó: " + t.getMessage());
             }
         }, "Terminal-Thread");
-        // Hilo daemon para no bloquear el cierre de la app JavaFX, de no tener este hilo  JavaFX no podría cerrarse hasta que la terminal termine manualmente
+        // Hilo daemon para no bloquear el cierre de la app JavaFX, de no tener este hilo
+        // JavaFX no podría cerrarse hasta que la terminal termine manualmente
         TerminalThread.setDaemon(true);
         TerminalThread.start();
         launch(args);
