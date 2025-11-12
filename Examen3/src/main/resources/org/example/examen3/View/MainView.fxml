@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.examen3.Controller.MainController"
+            prefHeight="700.0" prefWidth="1000.0">
+
+    <!-- ENCABEZADO -->
+    <top>
+        <VBox style="-fx-background-color: #0277BD; -fx-padding: 20;">
+            <Label text="📖 Diccionario Digital" textFill="white">
+                <font>
+                    <Font name="System Bold" size="28.0"/>
+                </font>
+            </Label>
+            <Label text="Consulta, registra y administra palabras" textFill="#ecf0f1">
+                <font>
+                    <Font size="14.0"/>
+                </font>
+                <VBox.margin>
+                    <Insets top="5.0"/>
+                </VBox.margin>
+            </Label>
+        </VBox>
+    </top>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <center>
+        <HBox spacing="10.0">
+            <padding>
+                <Insets top="10.0" right="10.0" bottom="10.0" left="10.0"/>
+            </padding>
+
+            <!-- PANEL IZQUIERDO: Búsqueda y Lista -->
+            <VBox spacing="10.0" prefWidth="350.0">
+
+                <!-- Panel de Búsqueda -->
+                <VBox spacing="8.0" style="-fx-background-color: #ecf0f1; -fx-padding: 15; -fx-background-radius: 5;">
+                    <Label text="🔍 Buscar Palabras" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+
+                    <TextField fx:id="txtSearch" promptText="Escribe aquí..."/>
+
+                    <HBox spacing="5.0">
+                        <ComboBox fx:id="cmbSearchType" prefWidth="120.0"/>
+                        <ComboBox fx:id="cmbLanguage" prefWidth="80.0"/>
+                        <Button fx:id="btnSearch" text="Buscar" onAction="#handleSearch"
+                                style="-fx-background-color: #0277BD; -fx-text-fill: white;"
+                                HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Lista de Palabras -->
+                <VBox spacing="5.0" VBox.vgrow="ALWAYS">
+                    <Label text="Resultados:" style="-fx-font-weight: bold;"/>
+                    <ListView fx:id="lstWords" VBox.vgrow="ALWAYS"/>
+                </VBox>
+
+            </VBox>
+
+            <!-- PANEL CENTRAL: Detalles de la Palabra -->
+            <VBox spacing="10.0" HBox.hgrow="ALWAYS">
+
+                <!-- Título de la Palabra -->
+                <Label fx:id="lblWordTitle" text="Selecciona una palabra"
+                       style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #0277BD;"/>
+
+                <Separator/>
+
+                <!-- Definiciones -->
+                <VBox spacing="5.0" VBox.vgrow="ALWAYS">
+                    <Label text="📝 Definiciones y Ejemplos" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <TextArea fx:id="txtDefinitions" editable="false" wrapText="true"
+                              VBox.vgrow="ALWAYS" prefHeight="200.0"
+                              style="-fx-control-inner-background: #f8f9fa;"/>
+                </VBox>
+
+                <!-- Sinónimos -->
+                <VBox spacing="5.0">
+                    <Label text="🔄 Sinónimos" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                    <TextArea fx:id="txtSynonyms" editable="false" wrapText="true"
+                              prefHeight="100.0"
+                              style="-fx-control-inner-background: #f8f9fa;"/>
+                </VBox>
+
+                <!-- Botón Eliminar -->
+                <Button fx:id="btnDeleteWord" text="🗑️ Eliminar Palabra" onAction="#handleDeleteWord"
+                        style="-fx-background-color: #e74c3c; -fx-text-fill: white;"
+                        maxWidth="Infinity"/>
+
+            </VBox>
+
+            <!-- PANEL DERECHO: Formularios -->
+            <VBox spacing="15.0" prefWidth="280.0">
+
+                <!-- Agregar Nueva Palabra -->
+                <VBox spacing="8.0" style="-fx-background-color: #e8f5e9; -fx-padding: 12; -fx-background-radius: 5;">
+                    <Label text="➕ Nueva Palabra" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+                    <TextField fx:id="txtNewWord" promptText="Palabra"/>
+                    <ComboBox fx:id="cmbNewLanguage" maxWidth="Infinity"/>
+                    <Button fx:id="btnAddWord" text="Agregar Palabra" onAction="#handleAddWord"
+                            style="-fx-background-color: #27ae60; -fx-text-fill: white;"
+                            maxWidth="Infinity"/>
+                </VBox>
+
+                <!-- Agregar Definición -->
+                <VBox spacing="8.0" style="-fx-background-color: #fff3e0; -fx-padding: 12; -fx-background-radius: 5;">
+                    <Label text="📖 Nueva Definición" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+                    <TextArea fx:id="txtNewDefinition" promptText="Definición"
+                              wrapText="true" prefHeight="70.0"/>
+                    <ComboBox fx:id="cmbPartOfSpeech" maxWidth="Infinity"/>
+                    <Button fx:id="btnAddDefinition" text="Agregar Definición" onAction="#handleAddDefinition"
+                            style="-fx-background-color: #f39c12; -fx-text-fill: white;"
+                            maxWidth="Infinity"/>
+                </VBox>
+
+                <!-- Agregar Sinónimo -->
+                <VBox spacing="8.0" style="-fx-background-color: #e3f2fd; -fx-padding: 12; -fx-background-radius: 5;">
+                    <Label text="🔄 Nuevo Sinónimo" style="-fx-font-weight: bold; -fx-font-size: 13px;"/>
+                    <TextField fx:id="txtNewSynonym" promptText="Sinónimo"/>
+                    <Button fx:id="btnAddSynonym" text="Agregar Sinónimo" onAction="#handleAddSynonym"
+                            style="-fx-background-color: #0277BD; -fx-text-fill: white;"
+                            maxWidth="Infinity"/>
+                </VBox>
+
+            </VBox>
+
+        </HBox>
+    </center>
+
+    <!-- PIE DE PÁGINA -->
+    <bottom>
+        <HBox style="-fx-background-color: #0277BD; -fx-padding: 10;" alignment="CENTER">
+            <Label text="Diccionario Digital by Karla Otero"
+                   textFill="white" style="-fx-font-size: 11px;"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>
